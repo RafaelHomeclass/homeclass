@@ -11,13 +11,20 @@ export async function POST(req) {
     const apiKey = process.env.MAILCHIMP_API_KEY;
     const audienceId = process.env.MAILCHIMP_AUDIENCE_ID;
 
-    const dataCenter = apiKey.split("-")[1];
+    if (!apiKey || !audienceId) {
+      return NextResponse.json({ error: "Configuração Mailchimp ausente" }, { status: 500 });
+    }
+
+    const dataCenter = apiKey.split("-")[1]; // pega o DC da chave
+
+    // Mailchimp exige Basic Auth
+    const auth = Buffer.from(`anystring:${apiKey}`).toString("base64");
 
     const res = await fetch(`https://${dataCenter}.api.mailchimp.com/3.0/lists/${audienceId}/members`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `apikey ${apiKey}`,
+        "Authorization": `Basic ${auth}`,
       },
       body: JSON.stringify({
         email_address: email,
