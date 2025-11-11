@@ -2,6 +2,8 @@
 import { useState } from "react";
 import Image from "next/image";
 import { FaEuroSign, FaDollarSign, FaBrazilianRealSign } from "react-icons/fa6";
+import { FaWhatsapp, FaInstagram } from "react-icons/fa";
+import { MdEmail } from "react-icons/md";
 import { empreendimentosData } from "@/data/empreendimentos";
 import { translations } from "@/lib/translations";
 import Newsletter from "./components/Newsletter";
@@ -123,6 +125,49 @@ export default function Home() {
     { value: 'ES', label: 'ES', icon: <ESFlag className="w-5 h-5" /> },
   ];
 
+  {
+    (() => {
+      // 1. Separa os dados em duas listas
+      const goianiaEmpreendimentos = empreendimentosData.filter(e =>
+        e.location.PT.includes("Goiânia")
+      );
+      const balnearioEmpreendimentos = empreendimentosData.filter(e =>
+        e.location.PT.includes("Balneário Camboriú")
+      );
+
+      // 2. Cria uma função limpa para renderizar o card (evita repetição)
+      const renderEmpreendimentoCard = (empreendimento) => (
+        <div key={empreendimento.id}>
+          {/* REQUISIÇÃO 1: Nome do empreendimento em cima */}
+          <h4 className="text-xl font-serif font-semibold text-orange-500 mb-3 text-center min-h-[64px] flex items-center justify-center px-2">
+            {empreendimento.title[currentIdioma]}
+          </h4>
+
+          {/* Card da Imagem (clicável) */}
+          <div
+            className="relative group cursor-pointer rounded-2xl overflow-hidden shadow-xl"
+            onClick={() => openModal(empreendimento.id)}
+          >
+            <Image
+              src={empreendimento.coverImage}
+              alt={empreendimento.title[currentIdioma]}
+              width={600}
+              height={400}
+              className="object-cover w-full h-72 lg:h-80 group-hover:scale-110 transition-transform duration-500"
+            />
+            <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+              <span className="text-white font-sans font-semibold text-lg tracking-wide">{content.empreendimentosVerDetalhes}</span>
+            </div>
+          </div>
+        </div>
+      );
+
+      globalThis.goianiaEmpreendimentos = goianiaEmpreendimentos;
+      globalThis.balnearioEmpreendimentos = balnearioEmpreendimentos;
+      globalThis.renderEmpreendimentoCard = renderEmpreendimentoCard;
+    })()
+  }
+
   return (
     <main className="font-sans text-gray-900">
       {/* Menu */}
@@ -242,27 +287,30 @@ export default function Home() {
       {/* Empreendimentos */}
       <section className="py-16 px-6" id="empreendimentos">
         <h2 className="text-3xl font-serif font-bold mb-12 text-center text-white">{content.empreendimentosTitle}</h2>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-          {empreendimentosData.map((empreendimento) => (
-            <div
-              key={empreendimento.id}
-              className="relative group cursor-pointer rounded-2xl overflow-hidden shadow-xl"
-              onClick={() => openModal(empreendimento.id)}
-            >
-              <Image
-                src={empreendimento.coverImage}
-                alt={empreendimento.title[currentIdioma]} // ATUALIZADO (Requer mudança no data)
-                width={600}
-                height={400}
-                className="object-cover w-full h-72 lg:h-80 group-hover:scale-110 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                {/* TEXTO ATUALIZADO */}
-                <span className="text-white font-sans font-semibold text-lg tracking-wide">{content.empreendimentosVerDetalhes}</span>
-              </div>
-            </div>
-          ))}
+        <h3 className="text-2xl font-serif font-bold mt-10 mb-10 text-center text-white">
+          Goiânia
+        </h3>
+
+        {/* Grid 1: Goiânia */}
+        {/* Ajustei o gap-y (vertical) para 10 para dar espaço ao novo título h4 */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10 max-w-6xl mx-auto">
+          {globalThis.goianiaEmpreendimentos.map(globalThis.renderEmpreendimentoCard)}
         </div>
+
+        {/* REQUISIÇÃO 2: Separador e Grid de Balneário */}
+        {globalThis.balnearioEmpreendimentos.length > 0 && (
+          <>
+            {/* Título Separador */}
+            <h3 className="text-2xl font-serif font-bold mt-20 mb-10 text-center text-white">
+              Balneário Camboriú
+            </h3>
+
+            {/* Grid 2: Balneário */}
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10 max-w-6xl mx-auto">
+              {globalThis.balnearioEmpreendimentos.map(globalThis.renderEmpreendimentoCard)}
+            </div>
+          </>
+        )}
       </section>
 
       {/* Informações sobre o Mercado Imobiliário */}
@@ -336,13 +384,34 @@ export default function Home() {
       <footer className="bg-gray-950 text-gray-400 py-8 text-center">
         <p className="font-sans">{content.footerCopyright}</p>
         <div className="flex justify-center gap-6 mt-4 font-sans">
-          <a href="https://wa.me/55629139-3737" target="_blank" rel="noopener noreferrer" className="hover:text-green-500 transition-colors">
+          {/* WhatsApp */}
+          <a
+            href="https://wa.me/55629139-3737"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-green-500 transition-colors flex items-center gap-2"
+          >
+            <FaWhatsapp className="text-lg" />
             {content.footerWhatsapp}
           </a>
-          <a href="mailto:soares@homeclass.imb.br" className="hover:text-red-400 transition-colors">
+
+          {/* E-mail */}
+          <a
+            href="mailto:soares@homeclass.imb.br"
+            className="hover:text-red-400 transition-colors flex items-center gap-2"
+          >
+            <MdEmail className="text-lg" />
             {content.footerEmail}
           </a>
-          <a href="https://instagram.com/soares.homeclass" target="_blank" rel="noopener noreferrer" className="hover:text-pink-500 transition-colors">
+
+          {/* Instagram */}
+          <a
+            href="https://instagram.com/homeclass.imob"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-pink-500 transition-colors flex items-center gap-2"
+          >
+            <FaInstagram className="text-lg" />
             {content.footerInstagram}
           </a>
         </div>

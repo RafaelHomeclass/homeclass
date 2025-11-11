@@ -84,9 +84,9 @@ export const empreendimentosData = [
   {
     id: 4,
     title: {
-      PT: "Legacy",
-      EN: "Legacy",
-      ES: "Legacy"
+      PT: "Legacy City Home",
+      EN: "Legacy City Home",
+      ES: "Legacy City Home"
     },
     location: {
       PT: "Goiânia",
