@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { FaEuroSign, FaDollarSign, FaBrazilianRealSign } from "react-icons/fa6";
 import { FaWhatsapp, FaInstagram } from "react-icons/fa";
@@ -69,8 +69,55 @@ export default function Home() {
     objetivo: ''
   });
 
+  const [conversionRates, setConversionRates] = useState({
+    'BRL': 1,
+    'USD': 0.18, // Valor padrão/fallback
+    'EUR': 0.17, // Valor padrão/fallback
+  });
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await fetch('/api/rates');
+        if (!response.ok) {
+          throw new Error('Falha ao buscar taxas locais');
+        }
+        const rates = await response.json();
+        setConversionRates(rates);
+      } catch (error) {
+        console.error("Não foi possível carregar as taxas de câmbio:", error);
+      }
+    })();
+  }, []);
+
+
   // Pega o objeto de tradução correto com base no estado 'currentIdioma'
   const content = translations[currentIdioma];
+
+  // Atualize a função formatPrice para usar o ESTADO
+  const formatPrice = (priceBRL) => {
+    if (!priceBRL) {
+      return content.precoSobConsulta || "Valor sob consulta";
+    }
+
+    // USA O ESTADO 'conversionRates' AQUI
+    const rate = conversionRates[currentMoeda];
+    const convertedPrice = priceBRL * rate;
+
+    const localeMap = {
+      'PT': 'pt-BR',
+      'EN': 'en-US',
+      'ES': 'es-ES',
+    };
+    const locale = localeMap[currentIdioma] || 'pt-BR';
+
+    return new Intl.NumberFormat(locale, {
+      style: 'currency',
+      currency: currentMoeda,
+      minimumFractionDigits: 2,
+    }).format(convertedPrice);
+  };
+
 
 
   const handleChange = (e) => {
@@ -432,6 +479,21 @@ export default function Home() {
                 <h3 className="text-2xl font-serif font-bold mb-2">{selectedEmpreendimento.title[currentIdioma]}</h3>
                 <p className="text-gray-500 mb-4 font-sans">{selectedEmpreendimento.location[currentIdioma]}</p>
                 <p className="text-gray-700 mb-6 font-sans">{selectedEmpreendimento.description[currentIdioma]}</p>
+                <p className="text-2xl font-sans font-bold text-orange-600 mb-4">
+                  {selectedEmpreendimento.priceBRL && selectedEmpreendimento.priceBRL > 0 ? (
+                    <>
+                      <span className="font-medium">
+                        {translations[currentIdioma].precoAPartirDe}
+                      </span>
+                      {' '}
+                      {formatPrice(selectedEmpreendimento.priceBRL)}
+                    </>
+                  ) : (
+                    <span className="font-medium">
+                      {translations[currentIdioma].precoSobConsulta}
+                    </span>
+                  )}
+                </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {selectedEmpreendimento.images.map((img, index) => (
                     <div key={index} className="relative w-full h-64 sm:h-72 lg:h-80">

@@ -7,6 +7,7 @@ export const empreendimentosData = [
       EN: "City Infinity by Pininfarina (Commercial)",
       ES: "City Infinity by Pininfarina (Comercial)"
     },
+    priceBRL: 800000,
     location: {
       PT: "Goiânia - Av. 85",
       EN: "Goiânia - 85th Avenue",
@@ -34,6 +35,7 @@ export const empreendimentosData = [
       EN: "City 23 by Pininfarina (Residential)",
       ES: "City 23 by Pininfarina (Residencial)"
     },
+    priceBRL: 5700000,
     location: {
       PT: "Goiânia - Praça T-23",
       EN: "Goiânia - T-23 Square",
@@ -61,6 +63,7 @@ export const empreendimentosData = [
       EN: "City Ricardo Paranhos",
       ES: "City Ricardo Paranhos"
     },
+    priceBRL: 3500000,
     location: {
       PT: "Goiânia - Setor Marista",
       EN: "Goiânia - Marista Sector",
@@ -88,6 +91,7 @@ export const empreendimentosData = [
       EN: "Legacy City Home",
       ES: "Legacy City Home"
     },
+    priceBRL: 4500000,
     location: {
       PT: "Goiânia",
       EN: "Goiânia",
@@ -115,6 +119,7 @@ export const empreendimentosData = [
       EN: "City Park Palace",
       ES: "City Park Palace"
     },
+    priceBRL: 5900000,
     location: {
       PT: "Goiânia",
       EN: "Goiânia",
@@ -144,6 +149,7 @@ export const empreendimentosData = [
       EN: "Casa Opus Marista",
       ES: "Casa Opus Marista"
     },
+    priceBRL: 5200000,
     location: {
       PT: "Goiânia - Setor Marista",
       EN: "Goiânia - Marista Sector",
@@ -171,6 +177,7 @@ export const empreendimentosData = [
       EN: "Opus Ace",
       ES: "Opus Ace"
     },
+    priceBRL: 2900000,
     location: {
       PT: "Goiânia",
       EN: "Goiânia",
@@ -198,6 +205,7 @@ export const empreendimentosData = [
       EN: "Tonino Lamborghini Residences",
       ES: "Tonino Lamborghini Residences"
     },
+    priceBRL: 610000,
     location: {
       PT: "Goiânia",
       EN: "Goiânia",
